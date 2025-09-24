@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="56" viewBox="0 0 200 56" fill="none">
+<rect width="200" height="56" rx="12" fill="#0ea5e9"/>
+<path d="M24 40V16h8l6 8 6-8h8v24h-8V28l-6 8-6-8v12h-8z" fill="white"/>
+<text x="90" y="35" font-family="Inter, Arial" font-size="20" fill="white">ChairUp</text>
+</svg>
