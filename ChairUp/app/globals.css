@@ -3,10 +3,7 @@
 @tailwind utilities;
 
 /* Light by default */
-:root {
-  color-scheme: light;
-}
-
+:root { color-scheme: light; }
 * { scroll-behavior: smooth; }
 
 body {
@@ -20,7 +17,6 @@ body {
 .container { @apply max-w-7xl mx-auto px-4; }
 .section   { @apply py-10 md:py-16; }
 
-/* Tokens */
 .card   { @apply bg-white border border-gray-200 rounded-2xl shadow-sm; }
 .glass  { @apply bg-white/70 backdrop-blur-md border border-gray-200 rounded-2xl shadow-sm; }
 .btn    { @apply inline-flex items-center gap-2 px-4 py-2 rounded-xl font-medium transition; }
@@ -32,7 +28,6 @@ body {
 .input  { @apply w-full px-3 py-2 rounded-xl border border-gray-300 bg-white outline-none focus:ring-2 focus:ring-brand/30; }
 .select { @apply w-full px-3 py-2 rounded-xl border border-gray-300 bg-white outline-none focus:ring-2 focus:ring-brand/30; }
 
-/* Accent text */
 .grad-text {
   background: linear-gradient(90deg, #0284c7, #0ea5e9, #22d3ee);
   -webkit-background-clip: text;
@@ -40,6 +35,5 @@ body {
   color: transparent;
 }
 
-/* Hover lift */
 .lift { transform: translateZ(0); transition: transform .15s ease, box-shadow .15s ease; }
 .lift:hover { transform: translateY(-2px); box-shadow: 0 10px 26px rgba(2,132,199,0.12); }
