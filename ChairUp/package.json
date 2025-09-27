@@ -17,6 +17,7 @@
     "openai": "4.58.1",
     "react": "18.3.1",
     "react-dom": "18.3.1"
+    "framer-motion": "11.2.6"
   },
   "devDependencies": {
     "@types/node": "22.7.5",
@@ -34,3 +35,5 @@
   },
   "engines": { "node": ">=18 <=22" }
 }
+
+
