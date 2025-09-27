@@ -2,94 +2,33 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Light by default */
+/* Light, airy base */
 :root { color-scheme: light; }
 * { scroll-behavior: smooth; }
 
 body {
   @apply bg-gray-50 text-gray-900 antialiased;
-  /* floor tile + ambient gradients */
-  background:
-    radial-gradient(60% 40% at 20% -10%, rgba(14,165,233,.08), transparent 60%),
-    radial-gradient(60% 40% at 100% 0%, rgba(99,102,241,.06), transparent 60%),
-    url('/patterns/barber-tile.svg');
-  background-size: auto, auto, 40px 40px;
-  background-attachment: fixed, fixed, fixed;
 }
 
-/* cursor spotlight */
-body::before {
-  content: '';
-  position: fixed;
-  inset: -20%;
-  pointer-events: none;
-  background: radial-gradient(500px 300px at var(--mx, 50%) var(--my, 50%), rgba(14,165,233,.12), transparent 55%);
-  transition: background-position .06s linear;
-  z-index: 0;
-}
-
-.container { @apply relative max-w-7xl mx-auto px-4; z-index: 1; }
+.container { @apply max-w-7xl mx-auto px-4; }
 .section   { @apply py-10 md:py-16; }
 
 /* Tokens */
 .card   { @apply bg-white border border-gray-200 rounded-2xl shadow-sm; }
-.glass  { @apply bg-white/70 backdrop-blur-md border border-gray-200 rounded-2xl shadow-sm; }
+.panel  { @apply bg-white border border-gray-200 rounded-xl; }
 .btn    { @apply inline-flex items-center gap-2 px-4 py-2 rounded-xl font-medium transition; }
-.btn-primary { @apply bg-brand text-white hover:bg-brand-dark; }
+.btn-primary { @apply bg-black text-white hover:bg-gray-900; } /* modern & bold */
 .btn-ghost   { @apply bg-gray-100 hover:bg-gray-200 text-gray-900; }
 .btn-outline { @apply border border-gray-300 hover:bg-gray-100; }
 .badge  { @apply inline-flex items-center gap-2 text-xs px-2.5 py-1 rounded-full bg-gray-100 border border-gray-200; }
-.pill   { @apply inline-flex items-center px-3 py-1.5 rounded-full border border-gray-300 bg-white text-sm; }
-.input  { @apply w-full px-3 py-2 rounded-xl border border-gray-300 bg-white outline-none focus:ring-2 focus:ring-brand/30; }
-.select { @apply w-full px-3 py-2 rounded-xl border border-gray-300 bg-white outline-none focus:ring-2 focus:ring-brand/30; }
+.chip   { @apply inline-flex items-center px-3 py-1.5 rounded-full border border-gray-300 bg-white text-sm; }
+.input  { @apply w-full px-3 py-2 rounded-xl border border-gray-300 bg-white outline-none focus:ring-2 focus:ring-black/20; }
+.select { @apply w-full px-3 py-2 rounded-xl border border-gray-300 bg-white outline-none focus:ring-2 focus:ring-black/20; }
 
-.grad-text {
-  background: linear-gradient(90deg, #0284c7, #0ea5e9, #22d3ee);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
+/* Hover lift */
 .lift { transform: translateZ(0); transition: transform .15s ease, box-shadow .15s ease; }
-.lift:hover { transform: translateY(-2px); box-shadow: 0 10px 26px rgba(2,132,199,0.12); }
+.lift:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(0,0,0,0.08); }
 
-/* NEON sign effect */
-.neon {
-  text-shadow:
-    0 0 6px rgba(14,165,233,.6),
-    0 0 12px rgba(14,165,233,.5),
-    0 0 24px rgba(14,165,233,.4);
-  animation: neon-flicker 3.5s infinite;
-}
-@keyframes neon-flicker {
-  0%, 19%, 21%, 23%, 80%, 100% { opacity: 1; }
-  20%, 22% { opacity: .6; }
-  81% { opacity: .85; }
-}
-
-/* BARBER POLE stripes */
-.pole {
-  background: repeating-linear-gradient(
-    -45deg,
-    #ef4444 0 16px,
-    #ffffff 16px 32px,
-    #3b82f6 32px 48px,
-    #ffffff 48px 64px
-  );
-  animation: pole-spin 6s linear infinite;
-  background-size: 56px 56px;
-}
-@keyframes pole-spin {
-  to { background-position: 0 224px; }
-}
-
-/* Tile SVG fallback if file missing */
-:root:has(.tile-fallback) body {
-  background-image:
-    radial-gradient(60% 40% at 20% -10%, rgba(14,165,233,.08), transparent 60%),
-    radial-gradient(60% 40% at 100% 0%, rgba(99,102,241,.06), transparent 60%),
-    linear-gradient(#e5e7eb 1px, transparent 1px),
-    linear-gradient(90deg, #e5e7eb 1px, transparent 1px);
-  background-size: auto, auto, 40px 40px, 40px 40px;
-  background-position: 0 0, 0 0, 0 0, 0 0;
-}
+/* Subtle skeleton shimmer */
+.skel { position: relative; overflow: hidden; background: linear-gradient(90deg,#f3f4f6 25%,#e5e7eb 37%,#f3f4f6 63%); background-size: 400% 100%; animation: shimmer 1.4s ease infinite; }
+@keyframes shimmer { 0% { background-position: 100% 0; } 100% { background-position: -100% 0; } }
