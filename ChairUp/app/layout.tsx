@@ -14,12 +14,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <header className="sticky top-0 z-40 bg-white/80 backdrop-blur border-b border-gray-200">
           <nav className="container flex items-center gap-6 h-16">
             <Link href="/" className="flex items-center gap-2 font-semibold">
-              <img src="/logo.svg" alt="ChairUp" className="h-8 w-auto" />
+              <span className="inline-block h-8 w-8 rounded-lg bg-black" />
               <span className="hidden sm:block">ChairUp</span>
             </Link>
             <div className="ml-auto hidden md:flex items-center gap-6 text-sm">
-              <Link href="/customer" className="hover:text-brand">Find Pros</Link>
-              <Link href="/dashboard" className="hover:text-brand">Business</Link>
+              <Link href="/customer" className="hover:text-black">Find Pros</Link>
+              <Link href="/dashboard" className="hover:text-black">Business</Link>
               <Link href="/sign-in" className="btn btn-ghost">Sign in</Link>
               <Link href="/sign-up" className="btn btn-primary">Get started</Link>
             </div>
