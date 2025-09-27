@@ -1,11 +1,5 @@
-'use client'
-
 import Link from 'next/link'
-import NeonSign from '@/components/NeonSign'
-import BarberPole from '@/components/BarberPole'
-import ParallaxScene from '@/components/ParallaxScene'
-import AmbientToggle from '@/components/AmbientToggle'
-import { useMemo, useState } from 'react'
+import SearchBar from '@/components/SearchBar'
 
 const categories = [
   { name: 'Barbers', emoji: '💈', href: '/customer?cat=Barber' },
@@ -17,73 +11,53 @@ const categories = [
 ]
 
 export default function Home() {
-  const [q, setQ] = useState('')
-  const suggestions = useMemo(() => {
-    const s = q.trim().toLowerCase()
-    return s ? categories.filter(c => c.name.toLowerCase().includes(s)).slice(0,4) : []
-  }, [q])
-
   return (
-    <ParallaxScene>
-      {/* HERO — Shop feel */}
+    <div>
+      {/* HERO */}
       <section className="section">
         <div className="container grid lg:grid-cols-2 gap-10 items-center">
           <div className="space-y-6">
-            <NeonSign text="OPEN" />
+            <span className="badge">Trusted by 2,000+ pros</span>
             <h1 className="text-4xl md:text-6xl font-extrabold leading-tight">
-              Step into the <span className="grad-text">ChairUp</span> shop
+              Book <span className="text-black">top-rated</span> beauty & grooming pros
             </h1>
-            <p className="text-gray-600 text-lg">
-              A modern barbershop in your browser — discover pros, book instantly, and get reminded.
-            </p>
-
-            {/* Search with quick suggestions */}
-            <div className="glass p-2">
-              <form action="/customer" className="flex gap-2">
-                <input
-                  name="q"
-                  value={q}
-                  onChange={e=>setQ(e.target.value)}
-                  placeholder='Try: "skin fade in El Cajon"'
-                  className="input"
-                />
-                <button className="btn btn-primary">Search</button>
-              </form>
-              {suggestions.length > 0 && (
-                <div className="mt-2 flex flex-wrap gap-2">
-                  {suggestions.map(s => (
-                    <Link key={s.name} href={s.href} className="pill hover:border-brand hover:text-brand">
-                      <span className="opacity-90 mr-1">{s.emoji}</span> {s.name}
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* CTAs */}
+            <p className="text-gray-600 text-lg">Fast search. Clear pricing. AI that finds times for you.</p>
+            <SearchBar />
             <div className="flex flex-wrap gap-3">
               <Link className="btn btn-primary" href="/customer">Find pros</Link>
               <Link className="btn btn-ghost" href="/sign-up">Join as a pro</Link>
             </div>
-
-            {/* Ambient toggle */}
-            <AmbientToggle />
           </div>
 
-          {/* Spinning pole + stat tiles */}
-          <div className="grid gap-6">
-            <div className="card p-6">
-              <div className="grid grid-cols-3 gap-4 text-center">
-                {[['12k+', 'Monthly bookings'], ['4.8★', 'Avg rating'], ['2k+', 'Verified pros']].map(([n,l]) => (
-                  <div key={l}>
-                    <div className="text-2xl font-bold">{n}</div>
-                    <div className="text-xs text-gray-600">{l}</div>
-                  </div>
-                ))}
-              </div>
+          <div className="card p-6">
+            <div className="grid grid-cols-3 gap-4 text-center">
+              {[
+                ['12k+', 'Monthly bookings'],
+                ['4.8★', 'Avg rating'],
+                ['2k+', 'Verified pros']
+              ].map(([n,l]) => (
+                <div key={l}>
+                  <div className="text-2xl font-bold">{n}</div>
+                  <div className="text-xs text-gray-600">{l}</div>
+                </div>
+              ))}
             </div>
-            <div className="card p-6 flex items-center justify-center">
-              <BarberPole />
+            <div className="mt-6 panel p-4">
+              <div className="text-sm text-gray-500 mb-2">AI quick actions</div>
+              <div className="flex flex-wrap gap-2">
+                <form action="/api/ai" method="post">
+                  <input type="hidden" name="q" value="Find me the earliest 45-min barber appointment tomorrow near El Cajon." />
+                  <button className="btn btn-outline" type="submit">Find me a slot</button>
+                </form>
+                <form action="/api/ai" method="post">
+                  <input type="hidden" name="q" value="Recommend a service based on a photo for my hair type." />
+                  <button className="btn btn-outline" type="submit">Recommend a service</button>
+                </form>
+                <form action="/api/ai" method="post">
+                  <input type="hidden" name="q" value="Reschedule my upcoming booking to any time after 5pm Friday." />
+                  <button className="btn btn-outline" type="submit">Reschedule for me</button>
+                </form>
+              </div>
             </div>
           </div>
         </div>
@@ -105,31 +79,14 @@ export default function Home() {
         </div>
       </section>
 
-      {/* HOW IT WORKS */}
-      <section className="section">
-        <div className="container grid md:grid-cols-3 gap-6">
-          {[
-            ['Walk in (online)', 'Find pros by category, price, rating & availability.'],
-            ['Take a seat', 'Pick a time — we confirm instantly.'],
-            ['Fresh cut', 'We’ll remind you; pay and tip cashless.']
-          ].map(([title, desc], i) => (
-            <div key={title} className="card p-6 lift">
-              <div className="text-brand font-semibold">{String(i+1).padStart(2,'0')}</div>
-              <h3 className="text-xl font-semibold mt-2">{title}</h3>
-              <p className="text-gray-600 mt-2">{desc}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
       {/* BUSINESS STRIP */}
       <section className="section py-10">
         <div className="container">
-          <div className="glass p-6 flex flex-wrap items-center justify-between gap-4">
+          <div className="panel p-6 flex flex-wrap items-center justify-between gap-4">
             <div>
               <div className="text-sm text-gray-500">Built for businesses</div>
-              <h3 className="text-xl font-semibold">A clean dashboard that helps you grow</h3>
-              <p className="text-gray-600 text-sm mt-1">Services, availability, bookings, and insights — all in one place.</p>
+              <h3 className="text-xl font-semibold">Dashboard that drives growth</h3>
+              <p className="text-gray-600 text-sm mt-1">Services, availability, bookings & insights — all in one place.</p>
             </div>
             <div className="flex gap-3">
               <Link href="/dashboard" className="btn btn-ghost">View dashboard</Link>
@@ -138,6 +95,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-    </ParallaxScene>
+    </div>
   )
 }
