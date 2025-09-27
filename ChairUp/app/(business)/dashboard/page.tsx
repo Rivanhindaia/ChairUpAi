@@ -1,57 +1,153 @@
 'use client'
-import { useEffect, useState } from 'react'
+
+import { useEffect, useMemo, useState } from 'react'
 import { createClient } from '@supabase/supabase-js'
-const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!)
-type Service = { id: string; name: string; price_cents: number; duration_min: number }
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+)
+
+type Service = { id: string; name: string; price_cents: number; duration_min: number; active?: boolean }
+type Booking = { id: string; start_at: string; end_at: string; status: string; service_id: string }
+
 export default function Dashboard() {
   const [services, setServices] = useState<Service[]>([])
+  const [bookings, setBookings] = useState<Booking[]>([])
   const [name, setName] = useState('')
-  const [price, setPrice] = useState(2500)
+  const [price, setPrice] = useState(3000)
   const [dur, setDur] = useState(30)
-  useEffect(()=>{ (async ()=>{
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    (async () => {
+      setLoading(true)
       const user = (await supabase.auth.getUser()).data.user
-      if (!user) return
-      const { data } = await supabase.from('services').select('id,name,price_cents,duration_min').eq('owner_id', user.id)
-      setServices(data ?? [])
+      if (user) {
+        const { data: svc } = await supabase
+          .from('services')
+          .select('id,name,price_cents,duration_min')
+          .eq('owner_id', user.id)
+          .order('created_at', { ascending: false })
+        setServices(svc ?? [])
+
+        const { data: bks } = await supabase
+          .from('bookings')
+          .select('id,start_at,end_at,status,service_id')
+          .order('start_at', { ascending: true })
+          .limit(12)
+        setBookings(bks ?? [])
+      }
+      setLoading(false)
     })()
-  },[])
+  }, [])
+
   async function addService() {
     const user = (await supabase.auth.getUser()).data.user
     if (!user) return alert('Please sign in.')
-    const { data, error } = await supabase.from('services').insert({ owner_id: user.id, name, price_cents: price, duration_min: dur }).select()
-    if (error) alert(error.message)
-    else setServices(prev => [...prev, ...(data ?? [])])
+    const { data, error } = await supabase
+      .from('services')
+      .insert({ owner_id: user.id, name, price_cents: price, duration_min: dur })
+      .select()
+    if (error) return alert(error.message)
+    setServices(prev => [...(data ?? []), ...prev])
+    setName(''); setPrice(3000); setDur(30)
   }
+
+  const kpis = useMemo(() => {
+    const upcoming = bookings.filter(b => b.status === 'scheduled').length
+    const avgDur = services.length ? Math.round(services.reduce((a,s)=>a+s.duration_min,0)/services.length) : 0
+    const avgPrice = services.length ? (services.reduce((a,s)=>a+s.price_cents,0)/services.length)/100 : 0
+    return { upcoming, avgDur, avgPrice }
+  }, [bookings, services])
+
   return (
-    <div className="container py-10 space-y-6">
-      <h1 className="text-3xl font-bold">Business Dashboard</h1>
-      <section className="grid md:grid-cols-2 gap-6">
-        <div className="rounded-xl border border-white/10 p-4">
-          <h2 className="font-semibold mb-3">Add a Service</h2>
-          <div className="grid gap-2">
-            <input className="px-3 py-2 rounded bg-white/10" placeholder="Service name (e.g., Fade)" value={name} onChange={e=>setName(e.target.value)} />
-            <div className="grid grid-cols-2 gap-2">
-              <input className="px-3 py-2 rounded bg-white/10" type="number" value={price} onChange={e=>setPrice(parseInt(e.target.value||'0'))} />
-              <input className="px-3 py-2 rounded bg-white/10" type="number" value={dur} onChange={e=>setDur(parseInt(e.target.value||'0'))} />
+    <div className="container section space-y-10">
+      <header className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl md:text-3xl font-bold">Business Dashboard</h1>
+          <p className="text-gray-600">Manage services, pricing, and keep an eye on bookings.</p>
+        </div>
+        <a href="/onboarding" className="btn btn-outline">Edit Business Profile</a>
+      </header>
+
+      {/* KPI cards */}
+      <section className="grid sm:grid-cols-3 gap-4">
+        <div className="card p-5 lift">
+          <div className="text-sm text-gray-500">Upcoming bookings</div>
+          <div className="mt-2 text-3xl font-semibold">{kpis.upcoming}</div>
+        </div>
+        <div className="card p-5 lift">
+          <div className="text-sm text-gray-500">Avg service duration</div>
+          <div className="mt-2 text-3xl font-semibold">{kpis.avgDur} min</div>
+        </div>
+        <div className="card p-5 lift">
+          <div className="text-sm text-gray-500">Avg service price</div>
+          <div className="mt-2 text-3xl font-semibold">${kpis.avgPrice.toFixed(2)}</div>
+        </div>
+      </section>
+
+      {/* Services manager */}
+      <section className="grid lg:grid-cols-3 gap-6">
+        <div className="card p-6 space-y-4 lg:col-span-1">
+          <h2 className="font-semibold">Add a Service</h2>
+          <input className="input" placeholder="Service name (e.g., Skin Fade)" value={name} onChange={e=>setName(e.target.value)} />
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="text-xs text-gray-500">Price (USD)</label>
+              <input className="input" type="number" value={(price/100).toFixed(2)} onChange={e=>setPrice(Math.round(parseFloat(e.target.value || '0')*100))} />
             </div>
-            <div className="text-xs text-white/60">Price in cents; Duration in minutes.</div>
-            <button onClick={addService} className="px-4 py-2 rounded bg-brand hover:bg-brand-dark w-max">Add service</button>
+            <div>
+              <label className="text-xs text-gray-500">Duration (min)</label>
+              <input className="input" type="number" value={dur} onChange={e=>setDur(parseInt(e.target.value||'0'))} />
+            </div>
+          </div>
+          <button onClick={addService} className="btn btn-primary w-full">Add service</button>
+          <p className="text-xs text-gray-500">You can edit prices and durations anytime.</p>
+        </div>
+
+        <div className="lg:col-span-2 card p-0 overflow-hidden">
+          <div className="flex items-center justify-between p-4 border-b border-gray-200">
+            <h2 className="font-semibold">Your Services</h2>
+            <span className="text-sm text-gray-500">{services.length} total</span>
+          </div>
+          <div className="divide-y divide-gray-200">
+            {services.map(s => (
+              <div key={s.id} className="p-4 flex items-center justify-between">
+                <div>
+                  <div className="font-medium">{s.name}</div>
+                  <div className="text-xs text-gray-500">{s.duration_min} min</div>
+                </div>
+                <div className="flex items-center gap-4">
+                  <div className="font-mono">${(s.price_cents/100).toFixed(2)}</div>
+                </div>
+              </div>
+            ))}
+            {services.length === 0 && (
+              <div className="p-8 text-center text-gray-500">No services yet — add your first service on the left.</div>
+            )}
           </div>
         </div>
-        <div className="rounded-xl border border-white/10 p-4">
-          <h2 className="font-semibold mb-3">Your Services</h2>
-          <ul className="space-y-2">
-            {services.map(s => (
-              <li key={s.id} className="rounded border border-white/10 p-3 flex justify-between">
-                <div>
-                  <div className="font-semibold">{s.name}</div>
-                  <div className="text-xs text-white/60">{s.duration_min} min</div>
-                </div>
-                <div className="font-mono">${(s.price_cents/100).toFixed(2)}</div>
-              </li>
-            ))}
-            {services.length === 0 && <div className="text-white/60">No services yet.</div>}
-          </ul>
+      </section>
+
+      {/* Bookings list (simple upcoming) */}
+      <section className="card overflow-hidden">
+        <div className="flex items-center justify-between p-4 border-b border-gray-200">
+          <h2 className="font-semibold">Upcoming Bookings</h2>
+          <span className="text-sm text-gray-500">{bookings.length} records</span>
+        </div>
+        <div className="divide-y divide-gray-200">
+          {loading && <div className="p-6 text-gray-500">Loading…</div>}
+          {!loading && bookings.length === 0 && <div className="p-6 text-gray-500">No bookings yet.</div>}
+          {bookings.map(b => (
+            <div key={b.id} className="p-4 flex items-center justify-between">
+              <div>
+                <div className="font-medium">{new Date(b.start_at).toLocaleString()}</div>
+                <div className="text-xs text-gray-500">Ends {new Date(b.end_at).toLocaleTimeString()}</div>
+              </div>
+              <div className="pill">{b.status}</div>
+            </div>
+          ))}
         </div>
       </section>
     </div>
