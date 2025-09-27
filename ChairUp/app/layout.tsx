@@ -11,7 +11,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body>
-        <header className="sticky top-0 z-40 border-b border-white/10 bg-neutral-950/70 backdrop-blur">
+        <header className="sticky top-0 z-40 bg-white/80 backdrop-blur border-b border-gray-200">
           <nav className="container flex items-center gap-6 h-16">
             <Link href="/" className="flex items-center gap-2 font-semibold">
               <img src="/logo.svg" alt="ChairUp" className="h-8 w-auto" />
@@ -31,29 +31,29 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
         <main>{children}</main>
 
-        <footer className="border-t border-white/10">
-          <div className="container py-10 grid sm:grid-cols-2 md:grid-cols-4 gap-6 text-sm text-white/70">
+        <footer className="border-t border-gray-200 bg-white">
+          <div className="container py-10 grid sm:grid-cols-2 md:grid-cols-4 gap-6 text-sm text-gray-600">
             <div>
-              <div className="font-semibold text-white mb-3">ChairUp</div>
+              <div className="font-semibold text-gray-900 mb-3">ChairUp</div>
               <p>Book barbers, hairstylists, nail techs & more — fast.</p>
             </div>
             <div>
-              <div className="font-semibold text-white mb-3">Product</div>
+              <div className="font-semibold text-gray-900 mb-3">Product</div>
               <ul className="space-y-2">
-                <li><a href="/customer" className="hover:text-white">Find pros</a></li>
-                <li><a href="/dashboard" className="hover:text-white">Business</a></li>
-                <li><a href="/onboarding" className="hover:text-white">Onboarding</a></li>
+                <li><a href="/customer" className="hover:text-gray-900">Find pros</a></li>
+                <li><a href="/dashboard" className="hover:text-gray-900">Business</a></li>
+                <li><a href="/onboarding" className="hover:text-gray-900">Onboarding</a></li>
               </ul>
             </div>
             <div>
-              <div className="font-semibold text-white mb-3">Resources</div>
+              <div className="font-semibold text-gray-900 mb-3">Resources</div>
               <ul className="space-y-2">
-                <li><a href="#" className="hover:text-white">Help Center</a></li>
-                <li><a href="#" className="hover:text-white">Safety</a></li>
-                <li><a href="#" className="hover:text-white">Privacy</a></li>
+                <li><a href="#" className="hover:text-gray-900">Help Center</a></li>
+                <li><a href="#" className="hover:text-gray-900">Safety</a></li>
+                <li><a href="#" className="hover:text-gray-900">Privacy</a></li>
               </ul>
             </div>
-            <div className="text-white/60">© {new Date().getFullYear()} ChairUp</div>
+            <div className="text-gray-500">© {new Date().getFullYear()} ChairUp</div>
           </div>
         </footer>
       </body>
