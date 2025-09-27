@@ -3,32 +3,26 @@
 @tailwind utilities;
 
 :root { color-scheme: dark; }
+* { scroll-behavior: smooth; }
 
-/* Background */
 body {
   @apply bg-neutral-950 text-white antialiased;
-  background-image:
-    radial-gradient(1200px 600px at 0% 0%, rgba(14,165,233,0.12), transparent 60%),
-    radial-gradient(1200px 600px at 100% 0%, rgba(99,102,241,0.12), transparent 60%),
-    radial-gradient(1200px 600px at 50% 100%, rgba(16,185,129,0.10), transparent 60%);
+  background:
+    radial-gradient(800px 400px at 10% 0%, rgba(14,165,233,0.12), transparent 60%),
+    radial-gradient(800px 400px at 90% 0%, rgba(99,102,241,0.12), transparent 60%),
+    radial-gradient(800px 400px at 50% 100%, rgba(16,185,129,0.10), transparent 60%);
   background-attachment: fixed;
 }
 
 .container { @apply max-w-7xl mx-auto px-4; }
-.section { @apply py-16 md:py-20; }
+.section   { @apply py-16 md:py-24; }
 
-/* Glass card */
-.glass {
-  @apply bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl;
-}
-
-/* Buttons */
-.btn {
-  @apply inline-flex items-center gap-2 px-4 py-2 rounded-xl font-medium transition;
-}
-.btn-primary { @apply bg-brand hover:bg-brand-dark text-white shadow-lg shadow-brand/20; }
+/* UI tokens */
+.glass { @apply bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl; }
+.btn { @apply inline-flex items-center gap-2 px-4 py-2 rounded-xl font-medium transition; }
+.btn-primary { @apply bg-brand hover:bg-brand-dark text-white shadow-lg shadow-brand/25; }
 .btn-ghost   { @apply bg-white/10 hover:bg-white/20 text-white; }
-.btn-light   { @apply bg-white text-neutral-900 hover:bg-neutral-100; }
+.badge { @apply inline-flex items-center gap-2 text-xs px-2.5 py-1 rounded-full bg-white/10 border border-white/10; }
 
 /* Fancy gradient text */
 .grad-text {
@@ -38,5 +32,25 @@ body {
   color: transparent;
 }
 
-/* Subtle divider */
-hr.divider { @apply border-t border-white/10; }
+/* Card hover */
+.card {
+  @apply glass p-6 transition-transform will-change-transform;
+  transform: translateZ(0);
+}
+.card:hover { transform: translateY(-2px); }
+
+/* Simple marquee */
+.marquee {
+  @apply overflow-hidden whitespace-nowrap;
+}
+.marquee-track {
+  display: inline-block; animation: marquee 20s linear infinite;
+}
+@keyframes marquee {
+  0% { transform: translateX(0) }
+  100% { transform: translateX(-50%) }
+}
+
+/* Testimonial carousel (snap) */
+.snap-x { scroll-snap-type: x mandatory; }
+.snap-start { scroll-snap-align: start; }
